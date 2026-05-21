@@ -1,0 +1,39 @@
+<section>
+  <h1>{{ titulo }} (Angular {{ versao }})</h1>
+
+  <!-- INTERPOLAÇÃO -->
+  <div class="card">
+    <h2>1. Interpolação ''</h2>
+    <p>Título: <strong>{{ titulo }}</strong></p>
+    <p>Versão: <strong>{{ versao }}</strong></p>
+    <p>Expressão: <strong>{{ 2 + 2 }}</strong></p>
+    <p>Método: <strong>{{ titulo.toUpperCase() }}</strong></p>
+  </div>
+
+  <!-- PROPERTY BINDING -->
+  <div class="card">
+    <h2>2. Property Binding [ ]</h2>
+    <img [src]="imagemUrl" [alt]="imagemAlt" width="180" />
+    <p><button [disabled]="botaoDesabilitado">Botão desabilitado</button></p>
+    <p>
+      <button (click)="botaoDesabilitado = !botaoDesabilitado">
+        {{ botaoDesabilitado ? 'Habilitar' : 'Desabilitar' }} botão acima
+      </button>
+    </p>
+  </div>
+
+  <!-- EVENT BINDING -->
+  <div class="card">
+    <h2>3. Event Binding ( )</h2>
+    <button (click)="onClicar()" (mouseover)="onMouseOver()">Clique ou passe o mouse</button>
+    <p>Cliques: <strong>{{ contadorCliques }}</strong></p>
+    <p>Última ação: <em>{{ ultimaAcao }}</em></p>
+  </div>
+
+  <!-- TWO-WAY BINDING -->
+  <div class="card">
+    <h2>4. Two-way Binding [( )]</h2>
+    <input [(ngModel)]="nome" placeholder="Digite seu nome" />
+    <p>{{ saudacao }}</p>
+  </div>
+</section>

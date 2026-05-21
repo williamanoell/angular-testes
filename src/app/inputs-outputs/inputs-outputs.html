@@ -1,0 +1,61 @@
+<section>
+  <h1>Input &amp; Output entre Componentes</h1>
+
+  <div class="layout">
+    <!-- Lista de produtos (pai → filho via input) -->
+    <div>
+      <h2>Produtos <span class="subtitulo">(componente pai)</span></h2>
+
+      <div class="grade">
+        @for (produto of produtos; track produto.id; let primeiro = $first) {
+          <!--
+            [produto]  → input()          – pai envia dados ao filho
+            [destaque] → input(false)     – input opcional com valor padrão
+            (adicionarAoCarrinho) → output() – filho notifica o pai
+            (remover)             → output() – filho notifica o pai
+          -->
+          <app-card-produto
+            [produto]="produto"
+            [destaque]="primeiro"
+            (adicionarAoCarrinho)="onAdicionarAoCarrinho($event)"
+            (remover)="onRemover($event)"
+          />
+        } @empty {
+          <p class="vazio">Nenhum produto na lista.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Painel direito -->
+    <div class="painel">
+      <!-- Carrinho -->
+      <div class="card-painel">
+        <h2>Carrinho ({{ carrinho.length }})</h2>
+        @if (carrinho.length > 0) {
+          <ul>
+            @for (item of carrinho; track $index) {
+              <li>{{ item.nome }} — {{ item.preco | currency: 'BRL' }}</li>
+            }
+          </ul>
+          <strong>Total: {{ totalCarrinho | currency: 'BRL' }}</strong>
+        } @else {
+          <p class="vazio">Carrinho vazio.</p>
+        }
+      </div>
+
+      <!-- Log de eventos -->
+      <div class="card-painel">
+        <h2>Log de eventos <span class="subtitulo">(outputs recebidos)</span></h2>
+        @if (log.length > 0) {
+          <ul class="log">
+            @for (entrada of log; track $index) {
+              <li>{{ entrada }}</li>
+            }
+          </ul>
+        } @else {
+          <p class="vazio">Nenhum evento ainda.</p>
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,124 @@
+<section>
+  <h1>RxJS — Conceitos principais</h1>
+
+  <!-- Loading global (BehaviorSubject via interceptor) -->
+  @if (carregando$ | async) {
+    <div class="loading-bar">Carregando via interceptor...</div>
+  }
+
+  <!-- Erro global (BehaviorSubject via catchError) -->
+  @if (erro$ | async; as msg) {
+    <div class="alerta erro">{{ msg }}</div>
+  }
+
+  <!-- 1. OBSERVABLE + SUBSCRIBE + takeUntil -->
+  <div class="card">
+    <h2>1. Observable + subscribe + takeUntil</h2>
+    <p class="desc">
+      <code>interval(1000)</code> emite um valor a cada segundo.
+      <code>subscribe()</code> inicia a escuta e retorna uma <code>Subscription</code>.
+      <code>takeUntil(destroy$)</code> cancela automaticamente no <code>ngOnDestroy</code>.
+    </p>
+    <p class="contador">{{ contador }}</p>
+    <button (click)="iniciarContador()" [disabled]="intervaloAtivo">Iniciar</button>
+    <button (click)="pararContador()" [disabled]="!intervaloAtivo">Parar</button>
+  </div>
+
+  <!-- 2. PROMISE vs OBSERVABLE -->
+  <div class="card">
+    <h2>2. Promise vs Observable</h2>
+    <p class="desc">
+      Promise executa imediatamente e resolve uma vez.
+      Observable é lazy (só executa com <code>subscribe</code> ou <code>async pipe</code>)
+      e pode emitir múltiplos valores.
+    </p>
+    <button (click)="carregarViaPromise()" [disabled]="carregandoPromise">
+      {{ carregandoPromise ? 'Carregando...' : 'Carregar via Promise' }}
+    </button>
+    <ul>
+      @for (post of postsPromise; track post.id) {
+        <li>{{ post.id }}. {{ post.title }}</li>
+      }
+    </ul>
+  </div>
+
+  <!-- 3. ASYNC PIPE + HttpClient -->
+  <div class="card">
+    <h2>3. async pipe + HttpClient</h2>
+    <p class="desc">
+      O <code>async pipe</code> faz o subscribe e o unsubscribe automaticamente.
+      O <code>HttpClient</code> retorna um Observable que emite uma única resposta.
+    </p>
+    <button (click)="carregarViaObservable()">Carregar posts</button>
+
+    @if (posts$ | async; as posts) {
+      <ul>
+        @for (post of posts; track post.id) {
+          <li>{{ post.id }}. {{ post.title }}</li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- 4. catchError + loading/error -->
+  <div class="card">
+    <h2>4. catchError + loading/error state</h2>
+    <p class="desc">
+      <code>catchError</code> intercepta erros no pipe do Observable.
+      O <code>BehaviorSubject</code> no serviço propaga o estado de erro para qualquer subscriber.
+    </p>
+    <button (click)="forcarErro()">Forçar erro HTTP</button>
+    @if (erroManual) {
+      <p class="alerta erro">{{ erroManual }}</p>
+    }
+  </div>
+
+  <!-- 5. switchMap + BehaviorSubject + debounceTime -->
+  <div class="card">
+    <h2>5. switchMap + BehaviorSubject + debounceTime</h2>
+    <p class="desc">
+      <code>switchMap</code> cancela a requisição anterior ao chegar um novo valor.
+      <code>debounceTime(400)</code> aguarda 400ms sem digitação antes de emitir.
+      <code>distinctUntilChanged()</code> evita requisições duplicadas.
+    </p>
+    <input
+      [(ngModel)]="termoBusca"
+      (ngModelChange)="onBusca($event)"
+      placeholder="Buscar posts pelo título..."
+    />
+
+    @if (resultadosBusca$ | async; as resultados) {
+      <p class="total">{{ resultados.length }} resultado(s)</p>
+      <ul>
+        @for (post of resultados; track post.id) {
+          <li>{{ post.title }}</li>
+        } @empty {
+          <li class="vazio">Nenhum resultado encontrado.</li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- 6. INTERCEPTOR (informativo) -->
+  <div class="card">
+    <h2>6. Interceptor HTTP</h2>
+    <p class="desc">
+      O <code>loadingInterceptor</code> é registrado em <code>app.config.ts</code> via
+      <code>withInterceptors([loadingInterceptor])</code>.
+      Ele chama <code>postsService.setLoading(true)</code> antes de cada requisição
+      e <code>setLoading(false)</code> no <code>finalize()</code> — exibindo a barra
+      de carregamento no topo desta página.
+    </p>
+    <div class="interceptor-fluxo">
+      <span class="passo">Requisição</span>
+      <span class="seta">→</span>
+      <span class="passo destaque">Interceptor<br/><small>setLoading(true)</small></span>
+      <span class="seta">→</span>
+      <span class="passo">HttpClient</span>
+      <span class="seta">→</span>
+      <span class="passo destaque">finalize()<br/><small>setLoading(false)</small></span>
+      <span class="seta">→</span>
+      <span class="passo">Resposta</span>
+    </div>
+  </div>
+</section>

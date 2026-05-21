@@ -1,0 +1,20 @@
+<div class="card" [class.destaque]="destaque()">
+  @if (destaque()) {
+    <span class="tag-destaque">Destaque</span>
+  }
+
+  <h3>{{ produto().nome }}</h3>
+  <p class="preco">{{ produto().preco | currency: 'BRL' }}</p>
+  <p class="estoque" [class.sem-estoque]="produto().estoque === 0">
+    {{ produto().estoque > 0 ? 'Em estoque: ' + produto().estoque : 'Sem estoque' }}
+  </p>
+
+  <div class="acoes">
+    <button
+      (click)="adicionarAoCarrinho.emit(produto())"
+      [disabled]="produto().estoque === 0">
+      Adicionar ao carrinho
+    </button>
+    <button class="remover" (click)="remover.emit(produto().id)">Remover</button>
+  </div>
+</div>

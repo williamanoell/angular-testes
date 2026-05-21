@@ -1,0 +1,87 @@
+<section>
+  <h1>Exemplos de Diretivas Angular</h1>
+
+  <!-- @if / @else -->
+  <div class="card">
+    <h2>1. if / else — Renderização condicional</h2>
+
+    @if (logado) {
+      <p class="badge sucesso">Você está logado!</p>
+    } @else {
+      <p class="badge erro">Você não está logado.</p>
+    }
+
+    <button (click)="logado = !logado">
+      {{ logado ? 'Fazer logout' : 'Fazer login' }}
+    </button>
+  </div>
+
+  <!-- @for -->
+  <div class="card">
+    <h2>2. for — Iteração sobre listas</h2>
+
+    <ul>
+      @for (fruta of frutas; track fruta; let i = $index) {
+        <li>{{ i + 1 }}. {{ fruta }}</li>
+      } @empty {
+        <li>Nenhuma fruta encontrada.</li>
+      }
+    </ul>
+
+    <button (click)="frutas.pop()">Remover última</button>
+    <button (click)="frutas = []">Limpar lista</button>
+    <button (click)="frutas = ['Maçã', 'Banana', 'Laranja', 'Uva', 'Manga']">Restaurar</button>
+  </div>
+
+  <!-- @switch -->
+  <div class="card">
+    <h2>3. switch — Seleção de caso</h2>
+
+    <select [(ngModel)]="diaSemana">
+      @for (dia of dias; track dia) {
+        <option [value]="dia">{{ dia }}</option>
+      }
+    </select>
+
+    <p>
+      @switch (diaSemana) {
+        @case ('sabado') { Final de semana! Descanse. }
+        @case ('domingo') { Final de semana! Descanse. }
+        @default { Dia útil. Bora trabalhar! }
+      }
+    </p>
+  </div>
+
+  <!-- ngClass -->
+  <div class="card">
+    <h2>4. ngClass — Aplicar classes dinamicamente</h2>
+
+    <p [ngClass]="{ sucesso: alertaTipo === 'sucesso', erro: alertaTipo === 'erro', aviso: alertaTipo === 'aviso' }"
+       class="badge">
+      Alerta do tipo: {{ alertaTipo }}
+    </p>
+
+    <button (click)="alertaTipo = 'sucesso'">Sucesso</button>
+    <button (click)="alertaTipo = 'erro'">Erro</button>
+    <button (click)="alertaTipo = 'aviso'">Aviso</button>
+  </div>
+
+  <!-- ngStyle -->
+  <div class="card">
+    <h2>5. ngStyle — Aplicar estilos dinamicamente</h2>
+
+    <p [ngStyle]="{ 'font-size': tamanhoFonte + 'px', color: corTexto }">
+      Este texto muda de tamanho e cor!
+    </p>
+
+    <label>
+      Tamanho ({{ tamanhoFonte }}px):
+      <input type="range" min="10" max="40" [(ngModel)]="tamanhoFonte" />
+    </label>
+
+    <label>
+      Cor:
+      <input type="color" [(ngModel)]="corTexto" />
+    </label>
+  </div>
+</section>
